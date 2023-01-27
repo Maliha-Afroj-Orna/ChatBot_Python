@@ -7,29 +7,20 @@ import speech_recognition
 import threading
 
 
-data_list = [
-             'What is your name?',
-             'I am Alpha.',
-             'What you do in free time?',
-             'I memorize things in my free time',
-             'Ok bye',
-             'Bye take care.'
-             ]
-
 bot = ChatBot('Bot')
 trainer = ListTrainer(bot)
 
-# for files in os.listdir('data/english/'):
-#     data = open('data/english/'+files, 'r', encoding='utf-8').readlines()
+for files in os.listdir('data/english/'):
+     data = open('data/english/'+files, 'r', encoding='utf-8').readlines()
 
-trainer.train(data_list)
+trainer.train(data)
 
 def botReply():
     question = questionField.get()
     question = question.capitalize()
     answer = bot.get_response(question)
     textarea.insert(END, 'You: '+question+'\n\n')
-    textarea.insert(END, 'Bot: '+str(answer)+'\n\n')
+    textarea.insert(END, 'Alpha: '+str(answer)+'\n\n')
     pyttsx3.speak(answer)
     questionField.delete(0, END)
 
@@ -39,7 +30,7 @@ def audioToText():
         sr = speech_recognition.Recognizer()
         try:
             with speech_recognition.Microphone() as m:
-                sr.adjust_for_ambient_noise(m, duration=0.2)
+                sr.adjust_for_ambient_noise(m, duration=0.1)
                 audio= sr.listen(m)
                 query= sr.recognize_google(audio)
 
@@ -50,6 +41,18 @@ def audioToText():
 
         except Exception as e:
             print(e)
+
+def voiceChange():
+    eng = pyttsx3.init()
+    voice = eng.getProperty('voices')
+
+    eng.setProperty('voice', voice[1].id)
+    eng.say("Welcome . This is our Bot Alpha ! Stay put.")
+    eng.runAndWait()
+
+
+if __name__=="__main__":
+    voiceChange()
 
 
 root = Tk()
